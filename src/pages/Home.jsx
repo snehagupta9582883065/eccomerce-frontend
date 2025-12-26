@@ -1,12 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion, useScroll, useTransform } from 'framer-motion';
 import axios from 'axios';
-import { Sparkles, ArrowRight, ShieldCheck, Zap, Package } from 'lucide-react';
+import { ArrowRight, Zap, ShieldCheck, Truck, Smartphone, Star, Play } from 'lucide-react';
 import ProductCard from '../components/ProductCard';
+import { Link } from 'react-router-dom';
 
 const Home = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const { scrollY } = useScroll();
+  const y1 = useTransform(scrollY, [0, 500], [0, 200]);
 
   useEffect(() => {
     axios.get('https://eccomerce-g27f.onrender.com/api/products')
@@ -15,73 +18,137 @@ const Home = () => {
   }, []);
 
   return (
-    <div className="bg-[#fcfcfc]">
-      {/* SECTION 1: THE LUXURY HERO */}
-      <section className="relative pt-32 pb-20 px-6 overflow-hidden">
-        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+    <div className="bg-gray-100 overflow-x-hidden selection:bg-emerald-500 selection:text-white">
+      {/* SECTION 1: CLEAN LUXURY HERO - LIGHT & BRIGHT */}
+      <section className="relative min-h-[90vh] pt-40 pb-20 px-6 flex items-center justify-center overflow-hidden">
+        {/* Dynamic Background */}
+        <div className="absolute top-0 inset-x-0 h-full bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-emerald-100/50 via-slate-50 to-white -z-20" />
+        <div className="absolute top-20 left-20 w-96 h-96 bg-purple-200/30 rounded-full blur-[120px] -z-10 mix-blend-multiply animate-blob" />
+        <div className="absolute bottom-20 right-20 w-96 h-96 bg-emerald-200/30 rounded-full blur-[120px] -z-10 mix-blend-multiply animate-blob animation-delay-2000" />
+
+        <div className="max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+          {/* TEXT CONTENT */}
           <motion.div
-            initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8 }}
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+            className="relative z-10"
           >
             <div className="flex items-center gap-2 mb-6">
-              <div className="h-[1px] w-12 bg-emerald-500"></div>
-              <span className="text-emerald-600 font-black tracking-[0.4em] text-[10px] uppercase">Religare Digital 2025</span>
+              <span className="px-3 py-1 rounded-full border border-slate-200 bg-white/50 backdrop-blur-sm text-[10px] font-black uppercase tracking-widest text-slate-500">
+                Officially Authorized
+              </span>
+              <span className="flex items-center gap-1 text-[10px] font-black uppercase tracking-widest text-emerald-600">
+                <Zap size={10} fill="currentColor" /> Instant Activation
+              </span>
             </div>
-            <h1 className="text-7xl md:text-8xl font-black text-slate-900 leading-[0.9] tracking-tighter mb-8">
-              Premium <br /> <span className="text-emerald-500 italic">Hardware.</span>
+
+            <h1 className="text-6xl lg:text-8xl font-black text-slate-900 leading-[0.9] tracking-tighter mb-8">
+              Identity <br />
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-500 via-teal-500 to-emerald-600">Simplified.</span>
             </h1>
-            <p className="text-slate-500 text-xl max-w-md leading-relaxed mb-10 font-medium">
-              Authorized L1 Biometric solutions for modern banking. Precision technology, delivered Pan-India.
+
+            <p className="text-slate-500 text-lg md:text-xl font-medium leading-relaxed max-w-md mb-10">
+              India's most trusted source for L1 Biometric Hardware.
+              Banking-grade security, delivered to your doorstep.
             </p>
-            <div className="flex items-center gap-8">
-              <button className="bg-slate-900 text-white px-10 py-5 rounded-full font-black flex items-center gap-3 hover:bg-emerald-500 transition-all shadow-2xl shadow-slate-200">
-                Shop Catalogue <ArrowRight size={20} />
+
+            <div className="flex items-center gap-4">
+              <button
+                onClick={() => document.getElementById('catalogue').scrollIntoView({ behavior: 'smooth' })}
+                className="bg-slate-900 text-white px-8 py-4 rounded-full font-black text-sm uppercase tracking-wider flex items-center gap-2 hover:bg-slate-800 transition-all hover:scale-105 active:scale-95 shadow-xl shadow-slate-200"
+              >
+                Start Shopping <ArrowRight size={16} />
               </button>
-              <div className="hidden sm:block">
-                <p className="text-2xl font-black text-slate-900 leading-none">9758950611</p>
-                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Support Line</p>
-              </div>
+              <Link to="/contact" className="px-8 py-4 rounded-full font-black text-sm uppercase tracking-wider text-slate-500 hover:text-slate-900 flex items-center gap-2 transition-all">
+                <Play size={16} fill="currentColor" className="opacity-50" /> Bulk Orders
+              </Link>
+            </div>
+
+            <div className="mt-12 flex items-center gap-4 text-xs font-bold text-slate-400 uppercase tracking-widest">
+              <p>Trusted By 500+ Banks</p>
+              <div className="h-px flex-1 bg-slate-200" />
             </div>
           </motion.div>
 
+          {/* HERO VISUAL */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }}
-            className="relative"
+            initial={{ opacity: 0, x: 50 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 1, delay: 0.2 }}
+            className="relative h-[500px] lg:h-[700px] flex items-center justify-center"
           >
-            <div className="bg-gradient-to-br from-emerald-50 to-blue-50 rounded-[4rem] p-12 aspect-square flex items-center justify-center relative shadow-inner">
-              <motion.div
-                animate={{ y: [0, -20, 0] }} transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-                className="w-full h-full bg-white rounded-[3rem] shadow-2xl flex items-center justify-center p-12"
-              >
-                <img
-                  src="./images/biometric.jpg"
-                  alt="Featured"
-                  className="w-full h-full object-cover rounded-[3rem]"
-                />
+            <div className="relative w-full aspect-square max-w-lg">
+              {/* Decorative Circle */}
+              <div className="absolute inset-0 border border-slate-200/60 rounded-full animate-[spin_30s_linear_infinite]" />
+              <div className="absolute inset-4 border border-slate-200/40 rounded-full animate-[spin_20s_linear_infinite_reverse]" />
 
+              {/* Main Image Container */}
+              <motion.div
+                style={{ y: y1 }}
+                className="absolute inset-10 bg-white rounded-[3rem] shadow-2xl shadow-emerald-100/50 flex items-center justify-center p-8 z-10"
+              >
+                <img src="./images/biometric.jpg" alt="Biometric Device" className="w-full h-full object-contain drop-shadow-2xl" />
+
+                {/* Floating Badge */}
+                <div className="absolute -bottom-6 -right-6 bg-white p-4 rounded-2xl shadow-xl flex items-center gap-3 animate-bounce-slow">
+                  <div className="bg-emerald-100 text-emerald-600 p-3 rounded-xl">
+                    <ShieldCheck size={24} />
+                  </div>
+                  <div>
+                    <p className="text-sm font-black text-slate-900">100% Secure</p>
+                    <p className="text-[10px] font-bold text-slate-400 uppercase">RD Service Ready</p>
+                  </div>
+                </div>
               </motion.div>
-              {/* Floating Badges */}
-              <div className="absolute top-10 right-0 bg-white p-4 rounded-3xl shadow-xl flex items-center gap-3 animate-bounce">
-                <div className="bg-emerald-500 p-2 rounded-full text-white"><Zap size={16} /></div>
-                <span className="font-black text-sm uppercase">L1 Setup Free</span>
-              </div>
             </div>
           </motion.div>
         </div>
       </section>
 
-      {/* SECTION 2: THE PRODUCT GRID */}
-      <section className="max-w-7xl mx-auto px-6 py-24">
-        <div className="flex flex-col items-center text-center mb-20">
-          <span className="bg-emerald-100 text-emerald-700 px-4 py-1 rounded-full text-[10px] font-black uppercase mb-4 tracking-widest">Authorized Collection</span>
-          <h2 className="text-5xl font-black text-slate-900 tracking-tighter">Certified Devices</h2>
+      {/* SECTION 2: FEATURES STRIP */}
+      <section className="py-20 bg-slate-50">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+            {[
+              { icon: <Zap />, label: "Fastest Delivery" },
+              { icon: <ShieldCheck />, label: "Official Warranty" },
+              { icon: <Truck />, label: "All India Ship" },
+              { icon: <Smartphone />, label: "Mobile Ready" }
+            ].map((item, i) => (
+              <div key={i} className="flex flex-col items-center justify-center text-center gap-3 p-6 rounded-3xl bg-white shadow-sm border border-slate-100 hover:shadow-md transition-all">
+                <div className="text-emerald-500">{item.icon}</div>
+                <span className="font-bold text-slate-700 text-sm">{item.label}</span>
+              </div>
+            ))
+            }
+          </div>
+        </div>
+      </section>
+
+      {/* SECTION 3: PRODUCTS */}
+      <section id="catalogue" className="max-w-7xl mx-auto px-6 py-32">
+        <div className="flex items-center justify-between mb-16">
+          <h2 className="text-4xl md:text-5xl font-black text-slate-900 tracking-tighter">
+            Latest <span className="text-emerald-500">Inventory.</span>
+          </h2>
+          <Link to="/contact" className="hidden md:flex items-center gap-2 font-bold text-slate-500 hover:text-emerald-500 transition-colors">
+            View All <ArrowRight size={16} />
+          </Link>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
-          {products.map((product) => (
-            <ProductCard key={product.id} product={product} />
-          ))}
-        </div>
+        {loading ? (
+          <div className="text-center py-20">
+            <div className="animate-spin w-10 h-10 border-4 border-emerald-500 border-t-transparent rounded-full mx-auto mb-4" />
+            <p className="font-bold text-slate-400">Loading Catalogue...</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-12">
+            {products.map((product) => (
+              <ProductCard key={product.id} product={product} />
+            ))}
+          </div>
+        )}
       </section>
     </div>
   );

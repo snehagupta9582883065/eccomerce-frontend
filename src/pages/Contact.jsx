@@ -1,75 +1,118 @@
 import React, { useRef, useState } from 'react';
-import { Mail, Phone, Send, CheckCircle } from 'lucide-react';
 import emailjs from '@emailjs/browser';
+import { motion } from 'framer-motion';
+import { Send, MapPin, Phone, Mail, MessageSquare } from 'lucide-react';
 
 const Contact = () => {
   const form = useRef();
-  const [sent, setSent] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [status, setStatus] = useState(null);
 
-  // ... inside your sendEmail function
   const sendEmail = (e) => {
     e.preventDefault();
+    setLoading(true);
 
-    // IMPORTANT: Replace these with your actual IDs from EmailJS Dashboard
-    const SERVICE_ID = "service_sf25p8w";   // Your Service ID
-    const TEMPLATE_ID = "template_p8vahyl"; // Your Template ID
-    const PUBLIC_KEY = "inh4dcUSuj3ndBnGX";      // Your Public Key
-
-    emailjs.sendForm(SERVICE_ID, TEMPLATE_ID, form.current, PUBLIC_KEY)
-      .then((result) => {
-        console.log("SUCCESS!", result.text);
-        setSent(true);
+    emailjs.sendForm('YOUR_SERVICE_ID', 'YOUR_TEMPLATE_ID', form.current, 'YOUR_PUBLIC_KEY')
+      .then(() => {
+        setStatus('success');
         form.current.reset();
-      }, (error) => {
-        console.log("FAILED...", error.text);
-        // This will help you see the specific error message in the console
-        alert("Error: " + error.text);
-      });
+      }, () => {
+        setStatus('error');
+      })
+      .finally(() => setLoading(false));
   };
-  return (
-    <div className="pt-40 pb-20 max-w-7xl mx-auto px-6">
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-20">
-        <div>
-          <span className="text-emerald-600 font-black tracking-[0.4em] uppercase text-[10px]">Get in Touch</span>
-          <h1 className="text-7xl font-black text-slate-900 tracking-tighter mt-2 mb-8">Let's Talk <br /> <span className="text-emerald-500 italic">Hardware.</span></h1>
-          <p className="text-slate-500 text-lg font-medium max-w-md mb-12 leading-relaxed">Need bulk pricing or technical help? Our specialist team is ready to assist your banking business.</p>
 
-          <div className="space-y-8">
-            <div className="flex items-center gap-6">
-              <div className="bg-white shadow-xl p-4 rounded-2xl"><Phone className="text-emerald-500" /></div>
-              <p className="text-2xl font-black text-slate-900 tracking-tight">+91 9758950611</p>
-            </div>
-            <div className="flex items-center gap-6">
-              <div className="bg-white shadow-xl p-4 rounded-2xl"><Mail className="text-blue-500" /></div>
-              <p className="text-xl font-bold text-slate-600 tracking-tight">support@religaredigital.in</p>
+
+  return (
+    <div className="min-h-screen bg-gray-100 text-white pt-32 pb-20 px-6 relative overflow-hidden">
+      {/* Background Ambience */}
+      <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-emerald-500/10 rounded-full blur-[150px] -z-10" />
+
+      <div className="max-w-7xl mx-auto">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="mb-8"
+        >
+          <button onClick={() => window.history.back()} className="text-sm font-bold text-slate-500 hover:text-white transition-colors">
+            ← Return to Home
+          </button>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-start"
+        >
+          {/* LEFT: INFO */}
+          <div>
+            <span className="text-emerald-400 font-bold uppercase tracking-widest text-xs mb-4 block">Get in Touch</span>
+            <h1 className="text-6xl md:text-8xl font-black tracking-tighter mb-8 leading-[0.9] text-[#0f172a]">
+              Let's Talk <br /><span className="text-emerald-500">Business.</span>
+            </h1>
+            <p className="text-slate-400 text-xl font-medium leading-relaxed mb-12 max-w-lg">
+              Require bulk pricing for CSP points or Bank Kiosks? Our sales team responds within 15 minutes.
+            </p>
+
+            <div className="space-y-8">
+              {[
+                { icon: <Phone size={24} />, title: "Call Direct", val: "+91 9758950611", sub: "Priority Support Line" },
+                { icon: <Mail size={24} />, title: "Email Us", val: "support@religaredigital.in", sub: "For Quotations" },
+                { icon: <MapPin size={24} />, title: "Headquarters", val: "New Delhi, India", sub: "Main Distribution Center" }
+              ].map((item, i) => (
+                <div key={i} className="flex items-center gap-6 group">
+                  <div className="w-16 h-16 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-emerald-500 group-hover:bg-emerald-500 group-hover:text-slate-900 transition-all duration-300">
+                    {item.icon}
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-lg text-[#0f172a]">{item.val}</h4>
+                    <p className="text-slate-500 text-sm font-medium">{item.sub}</p>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
-        </div>
 
-        <div className="bg-white p-12 rounded-[3.5rem] shadow-2xl shadow-slate-200 border border-slate-100">
-          {sent ? (
-            <div className="h-full flex flex-col items-center justify-center text-center py-20">
-              <CheckCircle size={80} className="text-emerald-500 mb-6 animate-bounce" />
-              <h2 className="text-3xl font-black text-slate-900 mb-2">Message Sent!</h2>
-              <p className="text-slate-500 font-bold">We will contact you shortly on your email.</p>
-              <button onClick={() => setSent(false)} className="mt-8 text-emerald-600 font-black underline">Send another message</button>
-            </div>
-          ) : (
+          {/* RIGHT: FORM */}
+          <div className="bg-white rounded-[3rem] p-10 md:p-14 shadow-2xl shadow-black/50 text-slate-900">
+            <h3 className="text-3xl font-black mb-8 flex items-center gap-3">
+              <MessageSquare className="text-emerald-500" /> Send Message
+            </h3>
+
             <form ref={form} onSubmit={sendEmail} className="space-y-6">
               <div className="grid grid-cols-2 gap-6">
-                {/* 'name' attribute zaroori hai EmailJS ke liye */}
-                <input name="from_name" type="text" placeholder="First Name" required className="w-full bg-slate-50 p-5 rounded-2xl border-none focus:ring-2 focus:ring-emerald-500 font-bold" />
-                <input name="mobile" type="text" placeholder="Mobile No" required className="w-full bg-slate-50 p-5 rounded-2xl border-none focus:ring-2 focus:ring-emerald-500 font-bold" />
+                <div className="space-y-2">
+                  <label className="text-xs font-bold uppercase tracking-widest text-slate-500">First Name</label>
+                  <input type="text" name="user_name" required className="w-full bg-slate-50 border-none rounded-2xl p-4 font-bold focus:ring-2 focus:ring-emerald-500" placeholder="John" />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-xs font-bold uppercase tracking-widest text-slate-500">Last Name</label>
+                  <input type="text" name="user_lastname" className="w-full bg-slate-50 border-none rounded-2xl p-4 font-bold focus:ring-2 focus:ring-emerald-500" placeholder="Doe" />
+                </div>
               </div>
-              <input name="reply_to" type="email" placeholder="Business Email" required className="w-full bg-slate-50 p-5 rounded-2xl border-none focus:ring-2 focus:ring-emerald-500 font-bold" />
-              <textarea name="message" placeholder="Tell us about your requirement..." rows="4" required className="w-full bg-slate-50 p-5 rounded-2xl border-none focus:ring-2 focus:ring-emerald-500 font-bold"></textarea>
 
-              <button type="submit" className="w-full bg-emerald-500 text-white py-6 rounded-2xl font-black text-xl flex items-center justify-center gap-3 hover:bg-slate-900 transition-all shadow-xl shadow-emerald-100 active:scale-95">
-                Send Message <Send size={20} />
+              <div className="space-y-2">
+                <label className="text-xs font-bold uppercase tracking-widest text-slate-500">Email Address</label>
+                <input type="email" name="user_email" required className="w-full bg-slate-50 border-none rounded-2xl p-4 font-bold focus:ring-2 focus:ring-emerald-500" placeholder="john@company.com" />
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-xs font-bold uppercase tracking-widest text-slate-500">Message</label>
+                <textarea name="message" required rows="4" className="w-full bg-slate-50 border-none rounded-2xl p-4 font-medium focus:ring-2 focus:ring-emerald-500" placeholder="Tell us about your requirements..."></textarea>
+              </div>
+
+              <button
+                type="submit"
+                disabled={loading}
+                className="w-full bg-slate-900 text-white py-5 rounded-2xl font-black text-lg hover:bg-emerald-500 hover:shadow-xl transition-all flex items-center justify-center gap-3"
+              >
+                {loading ? 'Sending...' : <>Send Request <Send size={20} /></>}
               </button>
+
+              {status === 'success' && <p className="text-emerald-600 font-bold text-center">Message sent successfully!</p>}
             </form>
-          )}
-        </div>
+          </div>
+        </motion.div>
       </div>
     </div>
   );
